@@ -28,6 +28,7 @@ python3 test.py
 - **Test 5:** Specifically tests the retrieval of image files, verifying that the images are received correctly and match expected contents.
 - **Test 6:** Sends invalid requests to the server, expecting a 404 Not Found response for each.
 - **Test 7:** Assesses the server's handling of timeout scenarios, ensuring that the server closes the client connection if there is no traffic on a socket for 1 second. Note: This test is not relevant for implementations where the client does not maintain a keep-alive connection. If your client closes the connection after each request, the server will naturally close the connection, and therefore, the timeout behavior will not be tested effectively.
+- **Test 8:** Verifies the server's ability to handle alternating requests for image and text files in a sequential manner.
 
 ### Expected Test Output
 Successful execution of all tests should produce the following output:

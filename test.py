@@ -100,7 +100,7 @@ class TestServerClientInteraction(unittest.TestCase):
       
     def test5(self):
         """Test with images"""
-        list_files = ['/a/1.jpg','/a/2.jpg','/a/3.jpg','/a/4.jpg','/a/5.jpg','/a/6.jpg','/a/b/1.jpg','/a/b/2.jpg','/a/b/3.jpg','/a/b/4.jpg','/a/b/5.jpg','/a/b/6.jpg', '/c/img/1.jpg','/c/img/2.jpg','/c/img/3.jpg','/c/img/4.jpg','/c/img/5.jpg','/c/img/6.jpg']
+        list_files = ['/a/1.jpg','/a/2.jpg','/a/3.jpg','/a/4.jpg','/a/5.jpg','/a/6.jpg','/a/b/1.jpg','/a/b/2.jpg','/a/b/3.jpg','/a/b/4.jpg','/a/b/5.jpg','/a/b/6.jpg', '/c/img/1.jpg','/c/img/2.jpg','/c/img/3.jpg','/c/img/4.jpg','/c/img/5.jpg','/c/img/6.jpg', '/favicon.ico']
         for path in list_files:
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', response)
@@ -134,6 +134,24 @@ class TestServerClientInteraction(unittest.TestCase):
         response = self.send_request_and_receive_response(req)
         self.assertIn('HTTP/1.1 200 OK', response)
         os.remove('index.html')
+        
+    def test8(self):
+        """Test that requests both images and text one after the other"""
+        list_files = ['/index.html', '/a/1.jpg','/result.html','/a/b/1.jpg','/a/b/ref.html','/a/2.jpg','/c/footube.css']
+        for path in list_files:
+            response = self.send_request_and_receive_response(path)
+            self.assertIn('HTTP/1.1 200 OK', response)
+            # Ensure the file was created by the client
+            filename = path.split('/')[-1]
+            self.assertTrue(os.path.exists(filename), f"[TEST 8] {path} file not created by the client")
+            with open(filename, 'rb') as file:
+                retrieved_contents = file.read()
+            expected_file_path = f'files{path}'
+            with open(expected_file_path, 'rb') as file:
+                expected_contents = file.read()
+            self.assertEqual(expected_contents, retrieved_contents, f"[TEST 8] {path} file content does not match the expected content")
+            # Clean up by removing the file after the test
+            os.remove(filename)
 
 if __name__ == '__main__':
     unittest.main()
