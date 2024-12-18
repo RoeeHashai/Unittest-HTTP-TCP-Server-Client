@@ -5,10 +5,10 @@
 This test is designed to validate the behavior of the server handling file and image requests. Each test verifies different aspects of server functionality, including response correctness for existing and non-existing files, redirection handling, and the server's ability to handle multiple consecutive requests.
 
 ### Running the Server
-Before running the tests, manually start the server on port 8000 using the following command:
+Before running the tests, manually start the server on port 80 using the following command:
 
 ```bash
-python3 server.py 8000
+python3 server.py 80
 ```
 
 If you wish to use a different port, ensure to update the port number in the test scripts as well.
@@ -44,4 +44,5 @@ OK
 ### Notes
 - **Wireshark Capture:** It is recommended to run these tests in parallel with a Wireshark capture to verify the expected behaviors of connection and data transmission.
 - **File and Directory Requirements:** Ensure that all necessary files and directories referenced in the tests (e.g., `files/`) are present within the project folder. Simply add the test script to your project directory and execute it from there.
+- **Log File:** The test generates a log file that records all commands sent to the client and all responses printed to the client's stdout. This can be useful for troubleshooting and verifying test outcomes.
 - **Cross-Platform Considerations:** Differences between operating systems (Linux, Windows) may necessitate adjustments to the Python command (`python3` vs. `python`) and the paths used within the tests.

@@ -8,7 +8,7 @@ class TestServerClientInteraction(unittest.TestCase):
     def setUpClass(cls):
         # Start the client
         cls.client_process = subprocess.Popen(
-            ['python3', 'client.py', 'localhost', '8000'],
+            ['python3', 'client.py', 'localhost', '80'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
