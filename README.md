@@ -35,9 +35,9 @@ Successful execution of all tests should produce the following output:
 
 ```
 $ python3 test.py
-.......
+........
 ----------------------------------------------------------------------
-Ran 7 tests in 3.087s
+Ran 8 tests in 3.087s
 
 OK
 ```
