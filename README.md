@@ -29,7 +29,7 @@ python3 test.py
 - **Test 6:** Sends invalid requests to the server, expecting a 404 Not Found response for each.
 - **Test 7:** Assesses the server's handling of timeout scenarios, ensuring that the server closes the client connection if there is no traffic on a socket for 1 second. Note: This test is not relevant for implementations where the client does not maintain a `keep-alive` connection. If your client closes the connection after each request, the server will naturally close the connection, and therefore, the timeout behavior will not be tested effectively.
 - **Test 8:** Verifies the server's ability to handle alternating requests for image and text files in a sequential manner.
-- **Test 9:** Tests the server's ability to handle large file transfers. This test verifies that a file approximately 1 MB in size is correctly transferred from server to client.
+- **Test 9:** Tests the server's ability to handle large file transfers. This test verifies that a file approximately 1.2 GB in size is correctly transferred from server to client.
 - **Test 10:** Tests the server's capacity to manage concurrent requests from multiple clients. It simulates simultaneous requests for different file types, ensuring all files are accurately delivered and consistent with their originals.
 - **Test 11:** This test ensures the server properly manages non-binary files—such as text and HTML files—by opening them in text mode (`'r'`) before sending. It validates this process by comparing the byte sequence of the source file opened in `'r'` mode with the byte sequence received from the server
 
@@ -40,7 +40,7 @@ Successful execution of all tests should produce the following output:
 $ python3 test.py
 ...........
 ----------------------------------------------------------------------
-Ran 11 tests in 3.174s
+Ran 11 tests in 20.918s
 
 OK
 ```

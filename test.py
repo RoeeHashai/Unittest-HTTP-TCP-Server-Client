@@ -159,7 +159,7 @@ class TestServerClientInteraction(unittest.TestCase):
         """Test the transfer of large files"""
         large_file_path = 'files/large_file.txt'
         with open(large_file_path, 'w') as file:
-            file.write('Hello World!' * 1000000)
+            file.write('Hello World!' * 100000000)
         response = self.send_request_and_receive_response('/large_file.txt')
         self.assertIn('HTTP/1.1 200 OK', response)
         # Ensure the file was created by the client
