@@ -5,10 +5,10 @@
 This test is designed to validate the behavior of the server handling file and image requests. Each test verifies different aspects of server functionality, including response correctness for existing and non-existing files, redirection handling, and the server's ability to handle multiple consecutive requests.
 
 ### Running the Server
-Before running the tests, manually start the server on port 80 using the following command:
+Before running the tests, manually start the server on port 8000 using the following command:
 
 ```bash
-python3 server.py 80
+python3 server.py 8000
 ```
 
 If you wish to use a different port, ensure to update the port number in the test scripts as well.
@@ -31,17 +31,16 @@ python3 test.py
 - **Test 8:** Verifies the server's ability to handle alternating requests for image and text files in a sequential manner.
 - **Test 9:** Tests the server's ability to handle large file transfers. This test verifies that a file approximately 1 MB in size is correctly transferred from server to client, ensuring data integrity during transmission.
 - **Test 10:** Tests the server's capacity to manage concurrent requests from multiple clients. It simulates simultaneous requests for different file types, ensuring all files are accurately delivered and consistent with their originals.
-
-
+- **Test 11:** This test ensures the server properly manages non-binary files—such as text and HTML files—by opening them in text mode (`'r'`) before sending. It validates this process by comparing the byte sequence of the source file opened in `'r'` mode with the byte sequence received from the server
 
 ### Expected Test Output
 Successful execution of all tests should produce the following output:
 
 ```
 $ python3 test.py
-..........
+...........
 ----------------------------------------------------------------------
-Ran 10 tests in 3.131s
+Ran 11 tests in 3.174s
 
 OK
 ```
@@ -50,4 +49,4 @@ OK
 - **Wireshark Capture:** It is recommended to run these tests in parallel with a Wireshark capture to verify the expected behaviors of connection and data transmission.
 - **File and Directory Requirements:** Ensure that all necessary files and directories referenced in the tests (e.g., `files/`) are present within the project folder. Simply add the test script to your project directory and execute it from there.
 - **Log File:** The test generates a log file that records all commands sent to the client and all responses printed to the client's stdout. This can be useful for troubleshooting and verifying test outcomes.
-- **Cross-Platform Considerations:** Differences between operating systems (Linux, Windows) may necessitate adjustments to the Python command (`python3` vs. `python`) and the paths used within the tests.
+- **Cross-Platform Considerations:** Differences between operating systems (Linux, Windows) may necessitate adjustments to the Python command (`python3` vs. `python`) and the paths used within the tests. It is recommended to conduct these tests on a Linux system, utilizing a VM or WSL.

@@ -2,13 +2,14 @@ import unittest
 import subprocess
 import time
 import os
+import socket
 
 class TestServerClientInteraction(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Start the client
         cls.client_process = subprocess.Popen(
-            ['python3', 'client.py', 'localhost', '80'],
+            ['python3', 'client.py', 'localhost', '8000'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -139,15 +140,16 @@ class TestServerClientInteraction(unittest.TestCase):
         """Test that requests both images and text one after the other"""
         list_files = ['/index.html', '/a/1.jpg','/result.html','/a/b/1.jpg','/a/b/ref.html','/a/2.jpg','/c/footube.css']
         for path in list_files:
+            mode = 'rb' if path.endswith(('.png', '.jpg', '.jpeg','ico')) else 'r'
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', response)
             # Ensure the file was created by the client
             filename = path.split('/')[-1]
             self.assertTrue(os.path.exists(filename), f"[TEST 8] {path} file not created by the client")
-            with open(filename, 'rb') as file:
+            with open(filename, mode) as file:
                 retrieved_contents = file.read()
             expected_file_path = f'files{path}'
-            with open(expected_file_path, 'rb') as file:
+            with open(expected_file_path, mode) as file:
                 expected_contents = file.read()
             self.assertEqual(expected_contents, retrieved_contents, f"[TEST 8] {path} file content does not match the expected content")
             # Clean up by removing the file after the test
@@ -156,16 +158,16 @@ class TestServerClientInteraction(unittest.TestCase):
     def test9(self):
         """Test the transfer of large files"""
         large_file_path = 'files/large_file.txt'
-        with open(large_file_path, 'wb') as file:
-            file.write(b'Hello World!' * 1000000)
+        with open(large_file_path, 'w') as file:
+            file.write('Hello World!' * 1000000)
         response = self.send_request_and_receive_response('/large_file.txt')
         self.assertIn('HTTP/1.1 200 OK', response)
         # Ensure the file was created by the client
         filename = 'large_file.txt'
         self.assertTrue(os.path.exists(filename), "[TEST 9] /large_file.txt file not created by the client")
-        with open(filename, 'rb') as file:
+        with open(filename, 'r') as file:
             retrieved_contents = file.read()
-        with open(large_file_path, 'rb') as file:
+        with open(large_file_path, 'r') as file:
             expected_contents = file.read()
         self.assertEqual(expected_contents, retrieved_contents, "[TEST 9] /large_file.txt file content does not match the expected content")
         os.remove(filename)
@@ -176,31 +178,62 @@ class TestServerClientInteraction(unittest.TestCase):
         def make_request(path):
             resp = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', resp)
-            
             # Retrieve the filename from the path and check file existence
             filename = path.split('/')[-1]
             self.assertTrue(os.path.exists(filename), f"{filename} not created")
-
+            mode = 'rb' if path.endswith(('.png', '.jpg', '.jpeg','ico')) else 'r'
             # Compare the contents of the downloaded file with the original
-            with open(f'files{path}', 'rb') as original_file:
+            with open(f'files{path}', mode) as original_file:
                 original_content = original_file.read()
-            with open(filename, 'rb') as downloaded_file:
+            with open(filename, mode) as downloaded_file:
                 downloaded_content = downloaded_file.read()
             self.assertEqual(original_content, downloaded_content, f"Content mismatch for {filename}")
-
             # Clean up by removing the file after verification
             os.remove(filename)
-
+            
         from threading import Thread
         paths = ['/index.html', '/a/1.jpg', '/c/footube.css']
         threads = [Thread(target=make_request, args=(path,)) for path in paths]
-
         for thread in threads:
             thread.start()
         for thread in threads:
             thread.join()
-
+            
+    def test11(self):
+        """Test to check that the server is reading the files in the correct format (comparing text read as bytes)."""
+        # HTML file
+        text_file_path = '/index.html'
+        response = self.send_request_and_receive_response(text_file_path)
+        self.assertIn('HTTP/1.1 200 OK', response)
+        # Ensure the file was created by the client
+        filename = text_file_path.split('/')[-1]
+        self.assertTrue(os.path.exists(filename), f"[TEST 11] {text_file_path} file not created by the client")
+        # Read the file saved by the client in binary mode
+        with open(filename, 'rb') as file:
+            retrieved_contents = file.read()
+        # Open the source file in text mode, read, and encode to bytes
+        expected_file_path = f'files{text_file_path}'
+        with open(expected_file_path, 'r') as file:
+            # Read the file content as string, then encode it to bytes
+            expected_contents = file.read().encode()
+        # Compare the bytes
+        self.assertEqual(expected_contents, retrieved_contents, f"[TEST 11] {text_file_path} file content does not match the expected content")
         
-
+        # Image file
+        img_file_path = '/favicon.ico'
+        response = self.send_request_and_receive_response(img_file_path)
+        self.assertIn('HTTP/1.1 200 OK', response)
+        # Ensure the file was created by the client
+        filename = img_file_path.split('/')[-1]
+        self.assertTrue(os.path.exists(filename), f"[TEST 11] {img_file_path} file not created by the client")
+        with open(filename, 'rb') as file:
+            retrieved_contents = file.read()
+        expected_file_path = f'files{img_file_path}'
+        with open(expected_file_path, 'rb') as file:
+            expected_contents = file.read()
+        self.assertEqual(expected_contents, retrieved_contents, f"[TEST 11] {img_file_path} file content does not match the expected content")
+        os.remove('index.html')
+        os.remove('favicon.ico')
+        
 if __name__ == '__main__':
     unittest.main()
