@@ -22,11 +22,11 @@ python3 test.py
 
 ### Test Descriptions
 - **Test 1:** Validates that an existing HTML file (`/index.html`) can be retrieved successfully.
-- **Test 2:** Checks the server's response when a non-existing file is requested, expecting a 404 Not Found.
+- **Test 2:** Checks the server's response when a non-existing file is requested, expecting a `404 Not Found`.
 - **Test 3:** Tests server redirection handling, ensuring the server redirects correctly and serves the target file.
 - **Test 4:** Confirms the server can handle multiple different file requests in succession and that each file is served correctly.
 - **Test 5:** Specifically tests the retrieval of image files, verifying that the images are received correctly and match expected contents.
-- **Test 6:** Sends invalid requests to the server, expecting a 404 Not Found response for each.
+- **Test 6:** Sends invalid requests to the server, expecting a `404 Not Found` response for each.
 - **Test 7:** Assesses the server's handling of timeout scenarios, ensuring that the server closes the client connection if there is no traffic on a socket for 1 second. Note: This test is not relevant for implementations where the client does not maintain a `keep-alive` connection. If your client closes the connection after each request, the server will naturally close the connection, and therefore, the timeout behavior will not be tested effectively.
 - **Test 8:** Verifies the server's ability to handle alternating requests for image and text files in a sequential manner.
 - **Test 9:** Tests the server's ability to handle large file transfers. This test verifies that a file approximately 1.2 GB in size is correctly transferred from server to client.
