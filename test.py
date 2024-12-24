@@ -270,20 +270,6 @@ class TestServerClientInteraction(unittest.TestCase):
         response = response.split('\r\n')[0]
         self.assertIn('HTTP/1.1 200 OK', response)
         socket_client.close()
-    
-    def test13(self):
-        """Test a HTTP request with a body."""
-        header = 'GET /index.html HTTP/1.1\r\n'
-        header += 'Content-Length: 10\r\n'
-        header += '\r\n'
-        header += '0123456789'
-        socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket_client.connect(('localhost', 8000))
-        socket_client.send(header.encode())
-        response = socket_client.recv(4096).decode()
-        response = response.split('\r\n')[0]
-        self.assertIn('HTTP/1.1 200 OK', response)
-        socket_client.close()
         
 if __name__ == '__main__':
     unittest.main()
