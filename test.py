@@ -2,9 +2,7 @@ import unittest
 import subprocess
 import time
 import os
-import sys
 import socket
-
 
 class TestServerClientInteraction(unittest.TestCase):
     @classmethod
@@ -69,6 +67,20 @@ class TestServerClientInteraction(unittest.TestCase):
     def test3(self):
         """Test a redirect response from the server."""
         response = self.send_request_and_receive_response('/redirect')
+        self.assertIn('HTTP/1.1 301 Moved Permanently', response, "[TEST 3] Redirect response did not return correctly")
+        response = self.client_process.stdout.readline()
+        self.assertIn('HTTP/1.1 200 OK', response, "[TEST 3] Redirected file did not return correctly")
+        filename = 'result.html'
+        self.assertTrue(os.path.exists(filename), "[TEST 3] /result.html file not created by the client")
+        with open(filename, 'r') as file:
+            retrieved_contents = file.read()
+        expected_file_path = 'files/result.html'
+        with open(expected_file_path, 'r') as file:
+            expected_contents = file.read()
+        self.assertEqual(expected_contents, retrieved_contents, "[TEST 3] /result.html file content does not match the expected content")
+        os.remove(filename)
+        
+        response = self.send_request_and_receive_response('redirect')
         self.assertIn('HTTP/1.1 301 Moved Permanently', response, "[TEST 3] Redirect response did not return correctly")
         response = self.client_process.stdout.readline()
         self.assertIn('HTTP/1.1 200 OK', response, "[TEST 3] Redirected file did not return correctly")
