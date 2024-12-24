@@ -81,21 +81,19 @@ class TestServerClientInteraction(unittest.TestCase):
         os.remove(filename)
         
     def test4(self):
-        """Test checks 6 differnt requests of files to the server one after the other."""
-        list_files = ['/index.html', 'index.html','index.html/','/a/b/ref.html','/c/footube.css','/c/Footube.html','/c/footube.js','/result.html']
+        """Test checks 7 differnt requests of files to the server one after the other."""
+        list_files = ['/index.html', 'index.html','/a/b/ref.html','/c/footube.css','c/Footube.html','/c/footube.js','/result.html']
         for path in list_files:
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', response)
             # Ensure the file was created by the client
-            if not path.startswith('/'):
-                path = '/' + path
-            if path.endswith('/'):
-                path = path[:-1]
             filename = path.split('/')[-1]
             self.assertTrue(os.path.exists(filename), f"[TEST 4] {path} file not created by the client")
             with open(filename, 'r') as file:
                 retrieved_contents = file.read()
             # Check if the content of the file is correct
+            if not path.startswith('/'):
+                path = '/' + path
             expected_file_path = f'files{path}'
             with open(expected_file_path, 'r') as file:
                 expected_contents = file.read()
@@ -105,19 +103,17 @@ class TestServerClientInteraction(unittest.TestCase):
       
     def test5(self):
         """Test with images"""
-        list_files = ['/a/1.jpg','a/2.jpg','/a/3.jpg/','/a/4.jpg','a/5.jpg/','/a/6.jpg','/a/b/1.jpg','a/b/2.jpg','/a/b/3.jpg','/a/b/4.jpg','/a/b/5.jpg','/a/b/6.jpg', '/c/img/1.jpg','/c/img/2.jpg','/c/img/3.jpg','/c/img/4.jpg','/c/img/5.jpg','/c/img/6.jpg', '/favicon.ico']
+        list_files = ['/a/1.jpg','a/2.jpg','/a/3.jpg','/a/4.jpg','a/5.jpg','/a/6.jpg','/a/b/1.jpg','a/b/2.jpg','/a/b/3.jpg','/a/b/4.jpg','/a/b/5.jpg','/a/b/6.jpg', '/c/img/1.jpg','/c/img/2.jpg','/c/img/3.jpg','/c/img/4.jpg','/c/img/5.jpg','/c/img/6.jpg', '/favicon.ico']
         for path in list_files:
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', response)
             # Ensure the file was created by the client
-            if not path.startswith('/'):
-                path = '/' + path
-            if path.endswith('/'):
-                path = path[:-1]
             filename = path.split('/')[-1]
             self.assertTrue(os.path.exists(filename), f"[TEST 5] {path} file not created by the client")
             with open(filename, 'rb') as file:
                 retrieved_contents = file.read()
+            if not path.startswith('/'):
+                path = '/' + path
             expected_file_path = f'files{path}'
             with open(expected_file_path, 'rb') as file:
                 expected_contents = file.read()
@@ -127,7 +123,7 @@ class TestServerClientInteraction(unittest.TestCase):
     
     def test6(self):
         """Test 404 Not Found - send bad requests to server"""
-        bad_req = ['Roee', '','///','/////','bad.html','/a','/a/b','/a/b/','/a/b/1','/a/b/1.','/a/b/1.j','/a/b/1.jp','//']
+        bad_req = ['Roee', '','//','///','/////','bad.html','/a','/a/b','/a/b/','/a/b/1','/a/b/1.','/a/b/1.j','/a/b/1.jp','index.html/']
         for path in bad_req:
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 404 Not Found', response)
@@ -152,12 +148,12 @@ class TestServerClientInteraction(unittest.TestCase):
             response = self.send_request_and_receive_response(path)
             self.assertIn('HTTP/1.1 200 OK', response)
             # Ensure the file was created by the client
-            if not path.startswith('/'):
-                path = '/' + path
             filename = path.split('/')[-1]
             self.assertTrue(os.path.exists(filename), f"[TEST 8] {path} file not created by the client")
             with open(filename, mode) as file:
                 retrieved_contents = file.read()
+            if not path.startswith('/'):
+                path = '/' + path
             expected_file_path = f'files{path}'
             with open(expected_file_path, mode) as file:
                 expected_contents = file.read()
