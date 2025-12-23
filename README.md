@@ -31,17 +31,19 @@ python3 test.py
 - **Test 8:** Verifies the server's ability to handle alternating requests for image and text files in a sequential manner.
 - **Test 9:** Tests the server's ability to handle large file transfers. This test verifies that a file approximately 1.2 GB in size is correctly transferred from server to client.
 - **Test 10:** Tests the server's capacity to manage concurrent requests from multiple clients. It simulates simultaneous requests for different file types, ensuring all files are accurately delivered and consistent with their originals.
-- **Test 11:** This test ensures the server properly manages non-binary files—such as text and HTML files—by opening them in text mode (`'r'`) before sending. It validates this process by comparing the byte sequence of the source file opened in `'r'` mode with the byte sequence received from the server
-- **Test 12:** Tests the server’s response to a large HTTP header.
+- **Test 11:** This test ensures the server properly manages non-binary files—such as text and HTML files—by opening them in text mode (`'r'`) before sending. It validates this process by comparing the byte sequence of the source file opened in `'r'` mode with the byte sequence received from the server.
+- **Test 12:** Tests the server's response to a large HTTP header containing over 1 million characters.
+- **Test 13:** Tests the server's ability to handle HTTP requests with a body (using `Content-Length` header).
+- **Test 14:** Tests the server's ability to handle HTTP requests with a very large body (100 MB).
 
 ### Expected Test Output
 Successful execution of all tests should produce the following output:
 
 ```
 $ python3 test.py
-.............
+..............
 ----------------------------------------------------------------------
-Ran 12 tests in 24.458s
+Ran 14 tests in XX.XXXs
 
 OK
 ```
